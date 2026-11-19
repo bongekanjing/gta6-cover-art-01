@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Coast — GTA 6-style Cover Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">
+    <span class="brand-mark">NC</span>
+    <span class="brand-name">NEON COAST</span>
+    <span class="brand-sub">cover studio</span>
+  </div>
+  <div class="top-actions">
+    <div class="size-picker" id="sizePicker" role="group" aria-label="Export size">
+      <button data-size="1080x1350" class="size-btn active">1080 × 1350</button>
+      <button data-size="1080x1080" class="size-btn">1080 × 1080</button>
+      <button data-size="1920x1080" class="size-btn">1920 × 1080</button>
+    </div>
+    <button id="exportBtn" class="export-btn">Export PNG ↓</button>
+  </div>
+</header>
+
+<main id="workspace">
+  <section id="stageWrap">
+    <canvas id="stage" width="1080" height="1350"></canvas>
+    <p id="stageHint">Click a panel to select it · drag to move the photo · scroll to zoom</p>
+  </section>
+
+  <aside id="controls">
+    <section class="panel" id="photosPanel">
+      <h2>1 · Photos</h2>
+      <div class="photo-row">
+        <button class="sample-btn" data-sample="pier">Pier day</button>
+        <button class="sample-btn" data-sample="boulevard">Boulevard dusk</button>
+        <label class="upload-btn" for="uploadInput">+ Add your photo</label>
+        <input type="file" id="uploadInput" accept="image/*" multiple hidden>
+      </div>
+      <p class="note">Photos stay on your machine — nothing is uploaded.</p>
+      <div id="photoSlots" class="photo-slots"></div>
+    </section>
+
+    <section class="panel" id="layoutPanel">
+      <h2>2 · Layout</h2>
+      <div class="layout-grid" id="layoutGrid">
+        <button data-layout="hero" class="layout-btn active">
+          <span class="thumb thumb-hero"></span>Hero + three
+        </button>
+        <button data-layout="grid" class="layout-btn">
+          <span class="thumb thumb-grid"></span>Four panels
+        </button>
+        <button data-layout="strip" class="layout-btn">
+          <span class="thumb thumb-strip"></span>Three strips
+        </button>
+        <button data-layout="full" class="layout-btn">
+          <span class="thumb thumb-full"></span>Full bleed
+        </button>
+      </div>
+    </section>
+
+    <section class="panel" id="gradePanel">
+      <h2>3 · Colour grade</h2>
+      <div class="grade-grid" id="gradeGrid">
+        <button data-grade="sunset" class="grade-btn active">
+          <span class="swatch sw-sunset"></span>Sunset
+        </button>
+        <button data-grade="neon" class="grade-btn">
+          <span class="swatch sw-neon"></span>Neon night
+        </button>
+        <button data-grade="teal" class="grade-btn">
+          <span class="swatch sw-teal"></span>Teal coast
+        </button>
+        <button data-grade="noir" class="grade-btn">
+          <span class="swatch sw-noir"></span>Noir
+        </button>
+      </div>
+    </section>
+
+    <section class="panel" id="captionPanel">
+      <h2>4 · Caption</h2>
+      <label class="field-label" for="captionInput">Title</label>
+      <input id="captionInput" type="text" value="SUNSET HEIST" maxlength="24" autocomplete="off">
+      <label class="field-label" for="subtitleInput">Subtitle (script)</label>
+      <input id="subtitleInput" type="text" value="vice city nights" maxlength="32" autocomplete="off">
+      <label class="field-label" for="tagInput">Top tag</label>
+      <input id="tagInput" type="text" value="NEON COAST" maxlength="18" autocomplete="off">
+      <label class="field-label" for="titleStyle">Title style</label>
+      <select id="titleStyle">
+        <option value="sunset">Sunset gradient</option>
+        <option value="white">White block</option>
+        <option value="neon">Neon outline</option>
+      </select>
+    </section>
+
+    <section class="panel" id="cropPanel">
+      <h2>5 · Selected panel</h2>
+      <p class="note" id="selectedLabel">Panel 1 — drag the photo, scroll to zoom.</p>
+      <label class="field-label" for="zoomSlider">Zoom</label>
+      <input id="zoomSlider" type="range" min="100" max="300" value="100">
+      <div class="row-btns">
+        <button id="fitBtn" class="mini-btn">Fit photo</button>
+        <button id="swapBtn" class="mini-btn">Swap photo ↻</button>
+      </div>
+    </section>
+
+    <p class="foot-note">Neon Coast is an original design. No Rockstar Games logo,
+    artwork or fonts. Lettering: Anton &amp; Pacifico (SIL Open Font License).</p>
+  </aside>
+</main>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
