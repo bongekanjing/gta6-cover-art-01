@@ -1,115 +1,108 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neon Coast — GTA 6-style Cover Studio</title>
-<link rel="stylesheet" href="style.css">
+<title>Vice Cover — GTA-style cover art maker</title>
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<header id="topbar">
-  <div class="brand">
-    <span class="brand-mark">NC</span>
-    <span class="brand-name">NEON COAST</span>
-    <span class="brand-sub">cover studio</span>
-  </div>
-  <div class="top-actions">
-    <div class="size-picker" id="sizePicker" role="group" aria-label="Export size">
-      <button data-size="1080x1350" class="size-btn active">1080 × 1350</button>
-      <button data-size="1080x1080" class="size-btn">1080 × 1080</button>
-      <button data-size="1920x1080" class="size-btn">1920 × 1080</button>
-    </div>
-    <button id="exportBtn" class="export-btn">Export PNG ↓</button>
-  </div>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">VC</span> VICE COVER</div>
+  <p class="tagline">Turn your photo into Vice City-style cover art — multi-panel poster, sunset grade, PNG export.</p>
 </header>
 
-<main id="workspace">
-  <section id="stageWrap">
-    <canvas id="stage" width="1080" height="1350"></canvas>
-    <p id="stageHint">Click a panel to select it · drag to move the photo · scroll to zoom</p>
+<main class="app">
+  <section class="controls" aria-label="Cover editor">
+    <h2>Make your cover</h2>
+    <ol class="steps">
+      <li>
+        <h3>1 · Add photos</h3>
+        <label class="file-btn">Choose photos from your machine
+          <input id="photoInput" type="file" accept="image/*" multiple>
+        </label>
+        <button id="loadSamples" type="button" class="btn ghost">Load the 3 sample photos</button>
+        <div id="thumbs" class="thumbs" aria-label="Loaded photos"></div>
+        <p class="hint">Photos stay on your machine — nothing is uploaded.</p>
+      </li>
+      <li>
+        <h3>2 · Layout &amp; size</h3>
+        <div class="row" id="layoutRow" role="group" aria-label="Panel layout">
+          <button type="button" data-layout="hero" class="btn chip active">Hero + 2</button>
+          <button type="button" data-layout="grid" class="btn chip">Grid 4</button>
+          <button type="button" data-layout="strip" class="btn chip">Strip 4</button>
+        </div>
+        <div class="row" id="sizeRow" role="group" aria-label="Export size">
+          <button type="button" data-size="square" class="btn chip active">1080 × 1080</button>
+          <button type="button" data-size="portrait" class="btn chip">1080 × 1350</button>
+          <button type="button" data-size="wide" class="btn chip">1920 × 1080</button>
+        </div>
+      </li>
+      <li>
+        <h3>3 · Pick a panel, crop the photo</h3>
+        <p class="hint">Click a panel in the preview, or drag the photo inside it. Scroll over it to zoom.</p>
+        <div class="row" id="panelChips" aria-label="Choose panel"></div>
+        <label>Photo in this panel
+          <select id="photoSelect"></select>
+        </label>
+        <label>Zoom <span id="zoomVal">1.00×</span>
+          <input id="zoom" type="range" min="1" max="2.5" step="0.01" value="1">
+        </label>
+        <label>Move left / right
+          <input id="panX" type="range" min="-0.4" max="0.4" step="0.01" value="0">
+        </label>
+        <label>Move up / down
+          <input id="panY" type="range" min="-0.4" max="0.4" step="0.01" value="0">
+        </label>
+        <button id="fillAll" type="button" class="btn ghost">Fill all panels with this photo</button>
+      </li>
+      <li>
+        <h3>4 · Caption &amp; grade</h3>
+        <label>Title
+          <input id="titleInput" type="text" maxlength="24" value="VICE SUNSET">
+        </label>
+        <label>Subtitle
+          <input id="subtitleInput" type="text" maxlength="40" value="NEON NIGHTS • PALM SHORES">
+        </label>
+        <label>Lettering
+          <select id="titleStyle">
+            <option value="sunset">Sunset gradient</option>
+            <option value="neon">Neon pink</option>
+            <option value="gold">Gold</option>
+          </select>
+        </label>
+        <label>Colour grade
+          <select id="gradeSelect">
+            <option value="sunset">Sunset</option>
+            <option value="neon">Neon night</option>
+            <option value="gold">Golden hour</option>
+          </select>
+        </label>
+        <label class="check"><input id="halftoneToggle" type="checkbox" checked> Halftone dots</label>
+        <label class="check"><input id="vignetteToggle" type="checkbox" checked> Vignette</label>
+      </li>
+      <li>
+        <h3>5 · Export your PNG</h3>
+        <div class="row export-row">
+          <button type="button" data-export="square" class="btn primary">PNG 1080 × 1080</button>
+          <button type="button" data-export="portrait" class="btn primary">PNG 1080 × 1350</button>
+          <button type="button" data-export="wide" class="btn primary">PNG 1920 × 1080</button>
+        </div>
+        <p id="status" role="status"></p>
+      </li>
+    </ol>
   </section>
 
-  <aside id="controls">
-    <section class="panel" id="photosPanel">
-      <h2>1 · Photos</h2>
-      <div class="photo-row">
-        <button class="sample-btn" data-sample="pier">Pier day</button>
-        <button class="sample-btn" data-sample="boulevard">Boulevard dusk</button>
-        <label class="upload-btn" for="uploadInput">+ Add your photo</label>
-        <input type="file" id="uploadInput" accept="image/*" multiple hidden>
-      </div>
-      <p class="note">Photos stay on your machine — nothing is uploaded.</p>
-      <div id="photoSlots" class="photo-slots"></div>
-    </section>
-
-    <section class="panel" id="layoutPanel">
-      <h2>2 · Layout</h2>
-      <div class="layout-grid" id="layoutGrid">
-        <button data-layout="hero" class="layout-btn active">
-          <span class="thumb thumb-hero"></span>Hero + three
-        </button>
-        <button data-layout="grid" class="layout-btn">
-          <span class="thumb thumb-grid"></span>Four panels
-        </button>
-        <button data-layout="strip" class="layout-btn">
-          <span class="thumb thumb-strip"></span>Three strips
-        </button>
-        <button data-layout="full" class="layout-btn">
-          <span class="thumb thumb-full"></span>Full bleed
-        </button>
-      </div>
-    </section>
-
-    <section class="panel" id="gradePanel">
-      <h2>3 · Colour grade</h2>
-      <div class="grade-grid" id="gradeGrid">
-        <button data-grade="sunset" class="grade-btn active">
-          <span class="swatch sw-sunset"></span>Sunset
-        </button>
-        <button data-grade="neon" class="grade-btn">
-          <span class="swatch sw-neon"></span>Neon night
-        </button>
-        <button data-grade="teal" class="grade-btn">
-          <span class="swatch sw-teal"></span>Teal coast
-        </button>
-        <button data-grade="noir" class="grade-btn">
-          <span class="swatch sw-noir"></span>Noir
-        </button>
-      </div>
-    </section>
-
-    <section class="panel" id="captionPanel">
-      <h2>4 · Caption</h2>
-      <label class="field-label" for="captionInput">Title</label>
-      <input id="captionInput" type="text" value="SUNSET HEIST" maxlength="24" autocomplete="off">
-      <label class="field-label" for="subtitleInput">Subtitle (script)</label>
-      <input id="subtitleInput" type="text" value="vice city nights" maxlength="32" autocomplete="off">
-      <label class="field-label" for="tagInput">Top tag</label>
-      <input id="tagInput" type="text" value="NEON COAST" maxlength="18" autocomplete="off">
-      <label class="field-label" for="titleStyle">Title style</label>
-      <select id="titleStyle">
-        <option value="sunset">Sunset gradient</option>
-        <option value="white">White block</option>
-        <option value="neon">Neon outline</option>
-      </select>
-    </section>
-
-    <section class="panel" id="cropPanel">
-      <h2>5 · Selected panel</h2>
-      <p class="note" id="selectedLabel">Panel 1 — drag the photo, scroll to zoom.</p>
-      <label class="field-label" for="zoomSlider">Zoom</label>
-      <input id="zoomSlider" type="range" min="100" max="300" value="100">
-      <div class="row-btns">
-        <button id="fitBtn" class="mini-btn">Fit photo</button>
-        <button id="swapBtn" class="mini-btn">Swap photo ↻</button>
-      </div>
-    </section>
-
-    <p class="foot-note">Neon Coast is an original design. No Rockstar Games logo,
-    artwork or fonts. Lettering: Anton &amp; Pacifico (SIL Open Font License).</p>
-  </aside>
+  <section class="preview" aria-label="Live preview">
+    <canvas id="preview" width="1080" height="1080"></canvas>
+    <p class="hint">Live preview — what you see is what the PNG gets.</p>
+  </section>
 </main>
 
-<script type="module" src="src/main.js"></script>
+<footer class="foot">
+  <p>Original artwork made by you, in your browser. No Rockstar Games logo, artwork or font is used here.</p>
+</footer>
+
+<script type="module" src="./src/main.js"></script>
 </body>
 </html>
